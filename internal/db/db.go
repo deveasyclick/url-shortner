@@ -1,13 +1,13 @@
-package database
+package db
 
 import (
 	"context"
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
+	"url-shortner/internal/config"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/joho/godotenv/autoload"
@@ -29,12 +29,11 @@ type service struct {
 }
 
 var (
-	database   = os.Getenv("BLUEPRINT_DB_DATABASE")
-	password   = os.Getenv("BLUEPRINT_DB_PASSWORD")
-	username   = os.Getenv("BLUEPRINT_DB_USERNAME")
-	port       = os.Getenv("BLUEPRINT_DB_PORT")
-	host       = os.Getenv("BLUEPRINT_DB_HOST")
-	schema     = os.Getenv("BLUEPRINT_DB_SCHEMA")
+	database   = config.DB_NAME
+	password   = config.DB_PASSWORD
+	username   = config.DB_USER
+	port       = config.DB_PORT
+	host       = config.DB_HOST
 	dbInstance *service
 )
 
@@ -43,11 +42,18 @@ func New() Service {
 	if dbInstance != nil {
 		return dbInstance
 	}
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", username, password, host, port, database, schema)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", username, password, host, port, database)
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Connected to database")
+
 	dbInstance = &service{
 		db: db,
 	}
