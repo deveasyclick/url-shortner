@@ -13,6 +13,7 @@ RUN go mod download
 
 
 FROM ghcr.io/a-h/templ:latest AS generate-template-stage
+# Set permission to UID of 65532, which is the UID of the nonroot user in the ghcr.io/a-h/templ:latest image
 COPY --chown=65532:65532 . /app
 WORKDIR /app
 RUN ["templ", "generate"]
