@@ -47,11 +47,13 @@ func New() Service {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Connected to database")
 
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println("Connected to database")
+
 	dbInstance = &service{
 		db: db,
 	}
