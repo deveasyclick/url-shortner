@@ -1,37 +1,30 @@
-FROM alpine:3.21.3 AS tailwindcss
+FROM alpine:3.21.3 AS download-tailwind
+RUN apk add --no-cache curl \
+&& curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/download/v4.0.8/tailwindcss-linux-x64-musl \
+&& chmod +x tailwindcss-linux-x64-musl \
+&& mv tailwindcss-linux-x64-musl tailwindcss
 
-RUN apk add --no-cache curl
-RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/download/v4.0.8/tailwindcss-linux-x64-musl
-RUN chmod +x tailwindcss-linux-x64-musl 
-RUN mv tailwindcss-linux-x64-musl tailwindcss
 
-
-FROM golang:1.24-alpine AS build
-
-RUN apk add --no-cache gcompat build-base
-
+FROM golang:1.24-alpine AS install-dependencies
 WORKDIR /app
-
 COPY go.mod go.sum ./
-
 # Download dependencies
 RUN go mod download
 
-# Copy application code
-COPY . .
 
-RUN go install github.com/a-h/templ/cmd/templ@latest 
+FROM ghcr.io/a-h/templ:latest AS generate-template-stage
+COPY --chown=65532:65532 . /app
+WORKDIR /app
+RUN ["templ", "generate"]
 
-# Cache the dependencies
-RUN go mod verify
 
-# Download and install tailwindcss
-COPY --from=tailwindcss /tailwindcss /app/tailwindcss
+FROM golang:1.24-alpine AS build
+RUN apk add --no-cache gcompat build-base
+COPY --from=generate-template-stage /app /app
+WORKDIR /app
+# Copy tailwindcss executable file from tailwindcss stage
+COPY --from=download-tailwind /tailwindcss /app/tailwindcss
 RUN ./tailwindcss -i cmd/web/styles/input.css -o cmd/web/assets/css/output.css
-
-# Generate templates
-RUN templ generate
-
 # Build the application
 RUN go build -o main cmd/api/main.go
 
