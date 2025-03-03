@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"url-shortner/internal/config"
-	"url-shortner/internal/db/model"
+	"url-shortner/internal/models"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/joho/godotenv/autoload"
@@ -46,12 +46,12 @@ func New() Service {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&model.URL{})
+	db.AutoMigrate(&models.URL{})
 
 	log.Println("Connected to database")
 
-	dbInstance = &service{
-		db: db,
+	dbInstance = &Service{
+		DB: db,
 	}
 	return dbInstance
 }
