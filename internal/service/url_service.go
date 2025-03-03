@@ -29,7 +29,7 @@ func (s *urlService) CreateShortURL(longURL string) (string, error) {
 	}
 
 	// If the long URL does not exist, generate a new short code
-	shortCode := generateShortURL()
+	shortCode := generateShortCode()
 
 	// Create a new URL model with the long URL and short code
 	// TODO: Set expiration time and remove expired urls from the database periodically
