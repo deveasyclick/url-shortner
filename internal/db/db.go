@@ -12,16 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// Service represents a service that interacts with a database.
-type Service interface {
-
-	// Close terminates the database connection.
-	// It returns an error if the connection cannot be closed.
-	Close() error
-}
-
-type service struct {
-	db *gorm.DB
+type Service struct {
+	DB *gorm.DB
 }
 
 var (
@@ -30,10 +22,10 @@ var (
 	username   = config.DB_USER
 	port       = config.DB_PORT
 	host       = config.DB_HOST
-	dbInstance *service
+	dbInstance *Service
 )
 
-func New() Service {
+func New() *Service {
 	// Reuse Connection
 	if dbInstance != nil {
 		return dbInstance
@@ -60,9 +52,9 @@ func New() Service {
 // It logs a message indicating the disconnection from the specific database.
 // If the connection is successfully closed, it returns nil.
 // If an error occurs while closing the connection, it returns the error.
-func (s *service) Close() error {
+func (s *Service) Close() error {
 	log.Printf("Disconnected from database: %s", database)
-	dbInstance, err := s.db.DB()
+	dbInstance, err := s.DB.DB()
 	if err != nil {
 		return err
 	}

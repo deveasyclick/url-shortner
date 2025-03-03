@@ -21,7 +21,7 @@ func NewServer() *http.Server {
 	NewServer := &Server{
 		port: config.PORT,
 
-		db: db.New(),
+		db: *db.New(),
 	}
 
 	// Declare Server config
