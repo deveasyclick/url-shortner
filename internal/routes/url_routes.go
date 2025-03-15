@@ -2,7 +2,7 @@ package routes
 
 import (
 	"net/http"
-	url_ui "url-shortner/cmd/web/url"
+	"url-shortner/cmd/web/home"
 	"url-shortner/internal/handler"
 	"url-shortner/internal/repository"
 	"url-shortner/internal/service"
@@ -23,7 +23,7 @@ func RegisterURLRoutes(mux *http.ServeMux, db *gorm.DB) {
 		}
 		switch r.Method {
 		case http.MethodGet:
-			handler := templ.Handler(url_ui.URLForm())
+			handler := templ.Handler(home.URLForm("", ""))
 			handler.ServeHTTP(w, r)
 		case http.MethodPost:
 			urlHandler.CreateShortURL(w, r)

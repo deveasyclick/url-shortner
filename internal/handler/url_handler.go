@@ -1,9 +1,11 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
+	"url-shortner/cmd/web/home"
 	"url-shortner/internal/service"
+
+	"github.com/a-h/templ"
 )
 
 type URLHandler struct {
@@ -29,8 +31,6 @@ func (h *URLHandler) CreateShortURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Set the response header and write the short URL to the response body
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(map[string]string{"short_url": shortURL})
+	handler := templ.Handler(home.URLForm(url, shortURL))
+	handler.ServeHTTP(w, r)
 }
