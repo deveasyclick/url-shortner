@@ -17,17 +17,6 @@ type urlService struct {
 }
 
 func (s *urlService) CreateShortURL(longURL string) (string, error) {
-	// Check if the long URL already exists in the repository
-	url, err := s.repo.FindByOriginalURL(longURL)
-	if err != nil {
-		return "", err
-	}
-
-	if url != nil {
-		// If the long URL already exists, return the existing short URL
-		return fmt.Sprintf("%s/%s", config.APP_URL, url.ShortCode), nil
-	}
-
 	// If the long URL does not exist, generate a new short code
 	shortCode := generateShortCode()
 
@@ -39,7 +28,7 @@ func (s *urlService) CreateShortURL(longURL string) (string, error) {
 	}
 
 	// Save the new URL to the repository
-	err = s.repo.Create(newURL)
+	err := s.repo.Create(newURL)
 	if err != nil {
 		return "", err
 	}
