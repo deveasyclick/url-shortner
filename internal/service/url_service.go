@@ -40,7 +40,7 @@ func (s *urlService) GetOriginalURL(shortCode string) (string, error) {
 	// Find the URL with the given short code in the repository
 	url, err := s.repo.FindByShortURL(shortCode)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error retrieving URL from repository: %w", err)
 	}
 
 	if url == nil {
