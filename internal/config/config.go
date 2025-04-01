@@ -7,9 +7,8 @@ import (
 
 var (
 	PORT        int
-	APP_ENV     string
+	ENV         string
 	DB_HOST     string
-	DB_PORT     string
 	DB_NAME     string
 	DB_USER     string
 	DB_PASSWORD string
@@ -18,7 +17,7 @@ var (
 
 func init() {
 	PORT, _ = strconv.Atoi(os.Getenv("PORT"))
-	APP_ENV = os.Getenv("APP_ENV")
+	ENV = os.Getenv("ENV")
 	APP_URL = os.Getenv("APP_URL")
 	DB_HOST = os.Getenv("DB_HOST")
 	DB_NAME = os.Getenv("DB_NAME")

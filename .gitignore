@@ -40,3 +40,5 @@ main
 cmd/web/assets/css/output.css
 tailwindcss
 
+#git-crypt-file
+url-shortner-key

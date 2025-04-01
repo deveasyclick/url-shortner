@@ -20,7 +20,6 @@ var (
 	database   = config.DB_NAME
 	password   = config.DB_PASSWORD
 	username   = config.DB_USER
-	port       = config.DB_PORT
 	host       = config.DB_HOST
 	dbInstance *Service
 )
@@ -30,8 +29,7 @@ func New() *Service {
 	if dbInstance != nil {
 		return dbInstance
 	}
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", username, password, host, port, database)
-
+	connStr := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, host, database)
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")

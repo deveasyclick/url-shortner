@@ -47,8 +47,7 @@ func mustStartPostgresContainer() (func(context.Context, ...testcontainers.Termi
 		return dbContainer.Terminate, err
 	}
 
-	host = dbHost
-	port = dbPort.Port()
+	host = dbHost + ":" + dbPort.Port()
 
 	return dbContainer.Terminate, err
 }
