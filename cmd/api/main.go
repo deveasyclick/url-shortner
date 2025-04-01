@@ -32,7 +32,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		slog.Info("Server started on port: %d\n", "port", config.PORT)
+		slog.Info("Server started", "port", config.PORT)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("HTTP server error: %s", "error", err)
 		}
@@ -42,7 +42,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		slog.Info("Web server started on port: %d\n", "port", config.WEB_PORT)
+		slog.Info("Web server started", "port", config.WEB_PORT)
 		if err := webServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("Web server error: %s", "error", err)
 		}
