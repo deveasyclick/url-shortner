@@ -16,15 +16,24 @@ func NewURLHandler(service service.URLService) *URLHandler {
 }
 
 func (h *URLHandler) CreateShortURL(w http.ResponseWriter, r *http.Request) {
-	// Read the long URL from the request body
-	url := r.FormValue("url")
-	if url == "" {
-		http.Error(w, "Missing url parameter", http.StatusBadRequest)
+	// Parse the request body
+	var requestData struct {
+		URL string `json:"url"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+		slog.Error("Error decoding request body", "error", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	// Validate the URL field
+	if requestData.URL == "" {
+		slog.Warn("Missing 'url' field in request body", "warn", requestData)
+		http.Error(w, "Missing 'url' field in request body", http.StatusBadRequest)
 		return
 	}
 
 	// Create a short URL using the URL service
-	shortURL, err := h.service.CreateShortURL(url)
+	shortURL, err := h.service.CreateShortURL(requestData.URL)
 	if err != nil {
 		http.Error(w, "Error creating short URL", http.StatusInternalServerError)
 		return
