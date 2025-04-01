@@ -13,6 +13,7 @@ var (
 	DB_USER     string
 	DB_PASSWORD string
 	APP_URL     string
+	WEB_PORT    int
 )
 
 func init() {
@@ -23,4 +24,5 @@ func init() {
 	DB_NAME = os.Getenv("DB_NAME")
 	DB_USER = os.Getenv("DB_USER")
 	DB_PASSWORD = os.Getenv("DB_PASSWORD")
+	WEB_PORT, _ = strconv.Atoi(os.Getenv("WEB_PORT"))
 }
