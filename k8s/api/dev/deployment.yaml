@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: url-shortner-deployment
+  namespace: url-shortner
   labels:
     app: url-shortner
 spec:
@@ -42,5 +43,5 @@ spec:
           envFrom:
             - secretRef:
                 name: postgres-secret
-            - secretRef:
-                name: url-shortner-secret
+            - configMapRef:
+                name: url-shortner-configmap

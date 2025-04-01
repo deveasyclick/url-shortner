@@ -1,12 +1,18 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: url-shortner-ingress
+  namespace: url-shortner
 spec:
+  ingressClassName: nginx
   rules:
-    - host: myapp.com
+    - host: url-shortner.dev
       http:
         paths:
-          - backend:
-              serviceName: url-shortner-service
-              servicePort: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: url-shortner-service
+                port:
+                  number: 80
