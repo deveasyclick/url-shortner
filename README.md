@@ -1,46 +1,178 @@
-# Project url-shortner
+# URL Shortner
 
-url-shortner features a robust and efficient URL shortening algorithm that generates unique, random alphanumeric codes. The algorithm ensures that each shortened URL is unique and cannot be predicted, providing an additional layer of security.
+`url-shortner` is a fast, secure, and efficient URL shortening service built with Go. It generates unique, random alphanumeric codes for URLs, ensuring unpredictability and uniqueness. The application uses PostgreSQL with GORM ORM, Tailwind for UI, and `templ` for template generation.
 
-The application integrates with a PostgreSQL using GORM ORM, templ and tailwind on th UI.
+---
+
+## Features
+
+- Shorten long URLs to compact codes
+- Redirect to original URLs securely
+- Unique, random code generation
+- Database persistence using PostgreSQL
+- Live reload for frontend/backend development
+
+---
+
+## Technology Stack
+
+- **Backend:** Go, GORM ORM
+- **Database:** PostgreSQL
+- **Frontend:** Tailwind CSS
+- **Templates:** templ
+- **Containerization:** Docker & Docker Compose
+- **Build Tools:** Makefile
+
+---
+
+## Prerequisites
+
+Before running the project, make sure you have:
+
+- [Go](https://golang.org/) installed (v1.20+ recommended)
+- [Docker](https://www.docker.com/) & Docker Compose
+- Make
+- Optional: `psql` CLI for database inspection
+
+---
 
 ## Getting Started
 
-1. Clone the repository
-2. Add a .env file and copy the configuration inside the .env.example into the .env file and modify accordingly
-3. Run `docker compose up -d` to  run postgresql containers in detached mode
-3. Run the application using `make watch`
-4. Open your browser and enter the proxy url http://localhost:3001 to have access to live reload 
+1. **Clone the repository**
 
+    ```bash
+      git clone <repository-url>
+      cd url-shortner
+    ```
 
-NOTE: Always run the application using port 3000. If you change the port number in the .env file, change it in the .air.toml file also
+2. **Create a `.env` file**
 
-## MakeFile
+    ```bash
+      cp .env.example .env
+    ```
 
-```
+   Update the file with your local configuration.
 
-Build the application
+3. **Set up PostgreSQL database**
+
+   * Start the Docker container:
+
+        ```bash
+          docker compose up -d
+        ```
+
+   * Example `.env` configuration:
+
+      ```env
+        DB_HOST=localhost
+        DB_PORT=5432
+        DB_NAME=url-shortner
+        DB_USER=testing
+        DB_PASSWORD=12345678
+     ```
+
+   * Verify connection:
+
+     ```bash
+     psql -h localhost -p 5432 -U yusuf -d url-shortner
+     ```
+
+     If prompted, enter your password. You should see the `url-shortner` database.
+
+   * If the database does not exist (first-time setup):
+
+     ```sql
+     CREATE DATABASE "url-shortner";
+     ```
+
+4. **Run the application**
+
+   ```bash
+   make watch
+   ```
+
+5. **Open in browser**
+
+   ```
+   http://localhost:3001
+   ```
+
+   to access live reload version.
+
+**NOTE:** Always run the application on port 3000. If you change the port in `.env`, also update `.air.toml`.
+
+---
+
+## Environment Variables
+
+| Variable     | Description                     | Example                                        |
+| ------------ | ------------------------------- | ---------------------------------------------- |
+| DB\_HOST     | Database host                   | localhost                                      |
+| DB\_PORT     | Database port                   | 5431                                           |
+| DB\_NAME     | Database name                   | url-shortner                                   |
+| DB\_USER     | Database user                   | yusuf                                          |
+| DB\_PASSWORD | Database password               | 12345678                                       |
+| DB\_SSLMODE  | Enable/disable SSL for Postgres | disable                                        |
+| PORT         | Application port                | 3000                                           |
+| WEB\_PORT    | Proxy / frontend port           | 3002                                           |
+| APP\_URL     | App URL for local testing       | [http://localhost:3001](http://localhost:3001) |
+| ENV          | Environment (local/dev/prod)    | local                                          |
+
+---
+
+## Usage
+
+**Build the application**
+
 ```bash
 make build
 ```
 
-Run the application
+**Run the application**
+
 ```bash
 make run
 ```
-```
 
+**Live reload for development**
 
-Live reload the application:
 ```bash
 make watch
 ```
-```
 
-Clean up binary from the last build:
+**Clean up binaries from previous build**
+
 ```bash
 make clean
 ```
 
+**Generate templ function files**
 
- Generate templ function files by running `templ generate``
+```bash
+templ generate
+```
+
+---
+
+## Testing
+
+Run all tests:
+
+```bash
+go test ./...
+```
+
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Run tests
+4. Submit a pull request
+
+---
+
+## License
+
+This project is licensed under the MIT License.
