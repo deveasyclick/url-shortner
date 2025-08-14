@@ -21,6 +21,7 @@ var (
 	password   = config.DB_PASSWORD
 	username   = config.DB_USER
 	host       = config.DB_HOST
+	port       = config.DB_PORT
 	dbInstance *Service
 )
 
@@ -29,14 +30,18 @@ func New() *Service {
 	if dbInstance != nil {
 		return dbInstance
 	}
-	connStr := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, host, database)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", username, password, host, port, database)
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&models.URL{})
+	err = db.AutoMigrate(&models.URL{})
+	if err != nil {
+		log.Fatal(err)
+		panic("failed to migrate database")
+	}
 
 	log.Println("Connected to database")
 
