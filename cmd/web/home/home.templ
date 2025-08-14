@@ -4,32 +4,70 @@ import "url-shortner/cmd/web"
 
 templ URLForm(longUrl string, shortUrl string) {
 	@web.Base() {
-		<main class="flex justify-center items-center flex-col h-full w-full bg-blue-700">
-			<h3 class="text-gray-50 font-sans text-5xl mb-4">URL Shortner</h3>
-			<form action="/" method="POST" class="text-center w-full md:w-[75%] lg:w-[50%] flex flex-col bg-blue-700 md:bg-gray-200 md:pb-4 md:shadow-[0_3px_3px_dodgerblue] px-2 md:px-0 mb-4">
-				<div class="input-group flex flex-col md:flex-row md:border-b-1 md:border-gray-300">
-					<input class="bg-gray-200 text-gray-400 p-4 w-full md:w-4/5 focus:outline-none mb-2 rounded-sm" id="url" name="url" type="text" placeholder="Paste a long url"/>
-					<div class="button-wrapper bg-blue-700 md:bg-gray-200  w-full md:w-1/5 p-2">
-						<button
-							type="submit"
-							class="bg-dodger-blue text-white py-2 px-6 md:rounded-full cursor-pointer md:hover:bg-blue-700 w-4/5 sm:w-2/5 text-3xl md:text-base/8 h-14 rounded-sm md:w-full"
-						>
-							Shorten
-							<img class="htmx-indicator" src="/spinner.gif"/>
-						</button>
-					</div>
-				</div>
-			</form>
-			<div class="box w-5"></div>
-			if shortUrl != "" {
-				<div id="hello-container" class="text-gray-50 z-1">
-					<p>Long URL: { longUrl }</p>
-					<p>Short URL: <a class="cursor-pointer text-blue-300" href={ templ.URL(shortUrl) }>{ shortUrl }</a></p>
-				</div>
-			}
-			<section class="wave w-full absolute bottom-0 z-0">
-				<svg class="sm:h-[280px] w-full fill-dodger-blue" xmlns="http://www.w3.org/2000/svg"><path fill-opacity="1" d="M0,32L18.5,42.7C36.9,53,74,75,111,117.3C147.7,160,185,224,222,224C258.5,224,295,160,332,154.7C369.2,149,406,203,443,224C480,245,517,235,554,197.3C590.8,160,628,96,665,106.7C701.5,117,738,203,775,240C812.3,277,849,267,886,234.7C923.1,203,960,149,997,128C1033.8,107,1071,117,1108,154.7C1144.6,192,1182,256,1218,245.3C1255.4,235,1292,149,1329,122.7C1366.2,96,1403,128,1422,144L1440,160L1440,320L1421.5,320C1403.1,320,1366,320,1329,320C1292.3,320,1255,320,1218,320C1181.5,320,1145,320,1108,320C1070.8,320,1034,320,997,320C960,320,923,320,886,320C849.2,320,812,320,775,320C738.5,320,702,320,665,320C627.7,320,591,320,554,320C516.9,320,480,320,443,320C406.2,320,369,320,332,320C295.4,320,258,320,222,320C184.6,320,148,320,111,320C73.8,320,37,320,18,320L0,320Z"></path></svg>
+		<main class="flex flex-col items-center justify-start min-h-screen w-full bg-gradient-to-b from-blue-700 to-blue-500 relative pb-12">
+			<!-- Header -->
+			<header class="w-full py-12 text-center">
+				<h1 class="text-5xl font-bold text-white mb-4">URL Shortener</h1>
+				<p class="text-gray-200 text-lg md:text-xl">Convert long URLs into short, easy-to-share links instantly</p>
+			</header>
+			<!-- URL Shortening Form -->
+			<section class="w-full flex justify-center px-4">
+				<form action="/" method="POST" class="w-full md:w-3/4 lg:w-2/5 bg-white md:bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col gap-4">
+					<label for="url" class="sr-only">Paste your long URL</label>
+					<input
+						id="url"
+						name="url"
+						type="url"
+						placeholder="Paste a long URL"
+						class="w-full p-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700"
+						required
+					/>
+					<button
+						type="submit"
+						class="w-full bg-blue-600 text-white py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors flex justify-center items-center gap-2"
+					>
+						Shorten
+						<img class="htmx-indicator w-6 h-6" src="/spinner.gif" alt="Loading"/>
+					</button>
+				</form>
 			</section>
+			<!-- Short URL Result -->
+			if shortUrl != "" {
+				<section class="mt-8 w-full flex justify-center px-4">
+					<div class="bg-white md:bg-gray-100 rounded-lg shadow-md p-6 w-full md:w-3/4 lg:w-2/5 text-center">
+						<h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Shortened URL</h2>
+						<p class="mb-2"><strong>Original URL:</strong> <span class="break-words">{ longUrl }</span></p>
+						<div class="flex items-center justify-center gap-2 mb-2">
+							<a id="short-url" class="text-blue-600 hover:underline break-all" href={ templ.URL(shortUrl) } target="_blank" rel="noopener noreferrer">{ shortUrl }</a>
+							<button
+								type="button"
+								onclick="navigator.clipboard.writeText(document.getElementById('short-url').textContent).then(() => { 
+									alert('Short URL copied to clipboard!');
+								})"
+								class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-600 text-gray-800 px-3 py-1 rounded-md text-sm cursor-pointer"
+							>
+								Copy
+							</button>
+						</div>
+						<p class="text-sm text-gray-500">Copy and share this link anywhere!</p>
+					</div>
+				</section>
+			}
+			<!-- Features Section -->
+			<section class="mt-12 w-full flex flex-col items-center px-4">
+				<div class="max-w-3xl text-center text-white">
+					<h2 class="text-3xl font-bold mb-6">Features</h2>
+					<ul class="text-lg space-y-2">
+						<li>✅ Generate unique, random short URLs</li>
+						<li>✅ Simple and intuitive interface</li>
+						<li>✅ Fast redirection to original URLs</li>
+						<li>✅ Track click counts (future enhancement)</li>
+						<li>✅ Responsive design for all devices</li>
+					</ul>
+				</div>
+			</section>
+			<!-- Spacer to prevent bottom cut-off -->
+			<div class="h-12"></div>
 		</main>
 	}
 }
