@@ -4,6 +4,10 @@
 
 ---
 
+![URL Shortener Screenshot](docs/images/demo.png)
+
+
+
 ## Features
 
 - Shorten long URLs to compact codes
